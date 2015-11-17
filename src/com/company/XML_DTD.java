@@ -29,10 +29,10 @@ public class XML_DTD {
         listaXMLleidos.add(URL);
 
         if(listaXML.size()>0){
-            for (int i = 0; i < listaXML.size(); i++) {
-                String url = listaXML.get(i);
+            for (int i = 0; i <= listaXML.size(); i++) {
+                String url = listaXML.get(0);
                 processIML(url);
-                listaXML.remove(i);
+                listaXML.remove(0);
                 listaXMLleidos.add(url);
 
             }
