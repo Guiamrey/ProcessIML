@@ -7,27 +7,27 @@
 		<NombreC>Imagine Dragons</NombreC>
 		<Id>ImDr</Id>
 	</Nombre>
-	<Nacionalidad>americano</Nacionalidad>
+	<Nacionalidad>Americano</Nacionalidad>
 	<Album tipo="nuevo" temas="3">
 
-		<NombreA>Smoke + Mirrors</NombreA>
+		<!--<NombreA>Smoke + Mirrors</NombreA>-->
 		<Año>2015</Año>
 
 		<Cancion estilo="rock alternativo">
-			<NombreT>Radioactive</NombreT>
+			<NombreT>Trouble</NombreT>
 			<Duracion>03:45</Duracion>
 			<Version>
 				<Nombre>
 					<NombreC>Dani Martin</NombreC>
 					<Id>DaniM</Id>
 				</Nombre>
-				<IML>IML2.xml</IML>
+				<IML>DMartin.xml</IML>
 			</Version>
 		</Cancion>
 
 		<Cancion estilo="rock alternativo">
-			<NombreT>Trouble</NombreT>
-			<Duracion>03:11</Duracion>
+			<NombreT>Polaroid</NombreT>
+			<Duracion>03:50</Duracion>
 			<Version>
 				<Nombre>
 					<NombreC>Joaquin Sabina</NombreC>

@@ -20,6 +20,7 @@ public class XML_DTD {
 
     public static ArrayList<String> listaXML = new ArrayList<>();
     public static ArrayList<String> listaXMLleidos = new ArrayList<>();
+    public static ArrayList<Document> listDoc = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -28,18 +29,17 @@ public class XML_DTD {
         processIML(URL);
         listaXMLleidos.add(URL);
 
-        if(listaXML.size()>0){
-            for (int i = 0; i <= listaXML.size(); i++) {
-                String url = listaXML.get(0);
-                processIML(url);
-                listaXML.remove(0);
-                listaXMLleidos.add(url);
 
-            }
+        while (listaXML.size() > 0) {
+            String url = listaXML.get(0);
+            processIML(url);
+            listaXML.remove(0);
+            listaXMLleidos.add(url);
         }
+
     }
-    
-    public static void processIML(String XML){
+
+    public static void processIML(String XML) {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(true);
         DocumentBuilder db;
@@ -49,6 +49,8 @@ public class XML_DTD {
             Document doc;
 
             doc = db.parse(XML);
+
+            listDoc.add(doc);
 
             XPath xpath = XPathFactory.newInstance().newXPath();
             NodeList nodelist = (NodeList) xpath.evaluate("/Interprete", doc, XPathConstants.NODESET);
@@ -73,10 +75,10 @@ public class XML_DTD {
                 i++;
                 for (int j = 1; j < childs2.getLength(); j++) {
                     if (!childs2.item(j).getNodeName().equals("Cancion")) {
-                        System.out.print("\t\t" + childs2.item(j).getNodeName()+":");
+                        System.out.print("\t\t" + childs2.item(j).getNodeName() + ":");
                         System.out.println(" " + childs2.item(j).getTextContent());
-                    }else{
-                        System.out.print("\t\t" + childs2.item(j).getNodeName()+":");
+                    } else {
+                        System.out.print("\t\t" + childs2.item(j).getNodeName() + ":");
 
                         NamedNodeMap attributes2 = childs2.item(j).getAttributes();
                         for (int k = 0; k < attributes2.getLength(); k++) {
@@ -85,29 +87,29 @@ public class XML_DTD {
 
                         NodeList childsCancion = childs2.item(j).getChildNodes();
                         for (int n = 1; n < childsCancion.getLength(); n++) {
-                            if(!childsCancion.item(n).getNodeName().equals("Version")) {
-                                System.out.print("\t\t\t\t" + childsCancion.item(n).getNodeName()+":");
+                            if (!childsCancion.item(n).getNodeName().equals("Version")) {
+                                System.out.print("\t\t\t\t" + childsCancion.item(n).getNodeName() + ":");
                                 System.out.println(" " + childsCancion.item(n).getTextContent());
                                 n++;
-                            }else{
+                            } else {
                                 System.out.println("\t\t\t\t" + childsCancion.item(n).getNodeName());
                                 NodeList childsVersion = childsCancion.item(n).getChildNodes();
                                 for (int a = 1; a < childsVersion.getLength(); a++) {
-                                    if(!childsVersion.item(a).getNodeName().equals("Nombre")) {
+                                    if (!childsVersion.item(a).getNodeName().equals("Nombre")) {
                                         System.out.print("\t\t\t\t\t" + childsVersion.item(a).getNodeName());
                                         System.out.println(": " + childsVersion.item(a).getTextContent());
 
-                                        if((!listaXML.contains(childsVersion.item(a).getTextContent()) && !childsVersion.item(a).getTextContent().equals("")) && !listaXMLleidos.contains(childsVersion.item(a).getTextContent())){
+                                        if ((!listaXML.contains(childsVersion.item(a).getTextContent()) && !childsVersion.item(a).getTextContent().equals("")) && !listaXMLleidos.contains(childsVersion.item(a).getTextContent())) {
                                             listaXML.add(childsVersion.item(a).getTextContent());
                                         }
                                         //añadir nuevas rutas hacia IMLs
                                         a++;
-                                    }else{
+                                    } else {
                                         System.out.println("\t\t\t\t\t" + childsVersion.item(a).getNodeName());
 
                                         NodeList childsNF = childsVersion.item(a).getChildNodes();
-                                        System.out.println("\t\t\t\t\t\t"+childsNF.item(1).getNodeName()+": "+childsNF.item(1).getTextContent());
-                                        System.out.println("\t\t\t\t\t\t"+childsNF.item(3).getNodeName()+": "+childsNF.item(3).getTextContent());
+                                        System.out.println("\t\t\t\t\t\t" + childsNF.item(1).getNodeName() + ": " + childsNF.item(1).getTextContent());
+                                        System.out.println("\t\t\t\t\t\t" + childsNF.item(3).getNodeName() + ": " + childsNF.item(3).getTextContent());
                                         a++;
                                     }
                                 }
@@ -120,6 +122,7 @@ public class XML_DTD {
             }
         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
             e.printStackTrace();
+
         }
     }
 }

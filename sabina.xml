@@ -8,30 +8,59 @@
         <Id>JSabina</Id>
     </Nombre>
 
-    <Nacionalidad>español</Nacionalidad>
+    <Nacionalidad>Español</Nacionalidad>
 
-    <Album tipo="recopilatorio" temas="2">
+    <Album tipo="nuevo" temas="3">
 
-        <NombreA>Dos pajaros de un tiro</NombreA>
-        <Año>2007</Año>
+        <NombreA>19 dias y 500 noches</NombreA>
+        <Año>1999</Año>
 
-        <Cancion estilo="folclore español">
-            <NombreT>Princesa</NombreT>
-            <Duracion>03:16</Duracion>
+        <Cancion estilo="rock">
+            <NombreT>Barbi Superestar</NombreT>
+            <Duracion>06:37</Duracion>
             <Version>
                 <Nombre>
-                    <NombreG>Imagine Dragons</NombreG>
-                    <Id>ImDr</Id>
+                    <NombreC>Dani Martin</NombreC>
+                    <Id>DMartin</Id>
                 </Nombre>
-                <IML>IML1.xml</IML>
+                <IML>DMartin.xml</IML>
             </Version>
 
         </Cancion>
 
-        <Cancion estilo="cantautor">
-            <NombreT>Juntos</NombreT>
-            <Duracion>05:01</Duracion>
+        <Cancion estilo="balada">
+            <NombreT>19 dias y 500 noches</NombreT>
+            <Duracion>04:45</Duracion>
         </Cancion>
+
+        <Cancion estilo="rock">
+            <NombreT>Dieguitos y Mafaldas</NombreT>
+            <Duracion>05:45</Duracion>
+        </Cancion>
+
+    </Album>
+
+    <Album tipo="recopilatorio" temas="2">
+
+        <NombreA>Punto... y seguido</NombreA>
+        <Año>2006</Año>
+
+        <Cancion estilo="Pop-rock">
+            <NombreT>Ojos de gata</NombreT>
+            <Duracion>03:34</Duracion>
+            <Version>
+                <Nombre>
+                    <NombreG>Los Secretos</NombreG>
+                    <Id>LSecretos</Id>
+                </Nombre>
+                <IML>LSecretos.xml</IML>
+            </Version>
+        </Cancion>
+        <Cancion estilo="Pop-rock">
+            <NombreT>Y nos dieron las diez</NombreT>
+            <Duracion>05:16</Duracion>
+        </Cancion>
+        
 
     </Album>
 
