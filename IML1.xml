@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE Interprete SYSTEM "C:\Users\ruth_\Desktop\ProcessIML\iml.dtd">
+<!DOCTYPE Interprete SYSTEM "C:\Users\ruth_\Desktop\Proyectos\ProcessIML\iml.dtd">
 
 <Interprete>
 	<Nombre>
@@ -21,7 +21,7 @@
 					<NombreC>Dani Martin</NombreC>
 					<Id>DaniM</Id>
 				</Nombre>
-				<IML>"/IML2.xml"</IML>
+				<IML>IML2.xml</IML>
 			</Version>
 		</Cancion>
 
@@ -33,7 +33,7 @@
 					<NombreC>Joaquin Sabina</NombreC>
 					<Id>JSabina</Id>
 				</Nombre>
-				<IML>""</IML>
+				<IML>sabina.xml</IML>
 			</Version>
 		</Cancion>
 

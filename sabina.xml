@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE Interprete SYSTEM "iml.dtd">
+
+<Interprete>
+    <Nombre>
+        <NombreC>Joaquin Sabina</NombreC>
+        <Id>JSabina</Id>
+    </Nombre>
+
+    <Nacionalidad>español</Nacionalidad>
+
+    <Album tipo="recopilatorio" temas="2">
+
+        <NombreA>Dos pajaros de un tiro</NombreA>
+        <Año>2007</Año>
+
+        <Cancion estilo="folclore español">
+            <NombreT>Princesa</NombreT>
+            <Duracion>03:16</Duracion>
+            <Version>
+                <Nombre>
+                    <NombreG>Imagine Dragons</NombreG>
+                    <Id>ImDr</Id>
+                </Nombre>
+                <IML>IML1.xml</IML>
+            </Version>
+
+        </Cancion>
+
+        <Cancion estilo="cantautor">
+            <NombreT>Juntos</NombreT>
+            <Duracion>05:01</Duracion>
+        </Cancion>
+
+    </Album>
+
+</Interprete>
