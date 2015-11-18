@@ -21,6 +21,8 @@ public class XML_DTD {
     public static ArrayList<String> listaXML = new ArrayList<>();
     public static ArrayList<String> listaXMLleidos = new ArrayList<>();
     public static ArrayList<Document> listDoc = new ArrayList<>();
+    public static ArrayList<String> listError = new ArrayList<>();
+    public static ArrayList<String> listFichError = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -45,10 +47,13 @@ public class XML_DTD {
         DocumentBuilder db;
         try {
             db = dbf.newDocumentBuilder();
-            db.setErrorHandler(new XML_DTD_ErrorHandler());
+            XML_DTD_ErrorHandler errorHandler = new XML_DTD_ErrorHandler();
+            db.setErrorHandler(errorHandler);
             Document doc;
 
             doc = db.parse(XML);
+
+            if(errorHandler)
 
             listDoc.add(doc);
 
@@ -122,6 +127,7 @@ public class XML_DTD {
             }
         } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
             e.printStackTrace();
+            return;
 
         }
     }
@@ -132,14 +138,17 @@ class XML_DTD_ErrorHandler extends DefaultHandler {
     }
 
     public void warning(SAXParseException spe) {
+
         System.out.println("Warning: " + spe.toString());
     }
 
     public void error(SAXParseException spe) {
+
         System.out.println("Error: " + spe.toString());
     }
 
     public void fatalerror(SAXParseException spe) {
+
         System.out.println("Fatal Error: " + spe.toString());
     }
 }
