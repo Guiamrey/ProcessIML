@@ -194,10 +194,7 @@ public class XML_DTD {
 
     public static ArrayList getCancionesCantante(String cantante, String album) {
         ArrayList<String> lista = new ArrayList<>();
-        String descrp = null;
-        String nombreC = null;
-        String duracion = null;
-
+        
         for (Document doc : listDoc) {
             Element element = doc.getDocumentElement();
             String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
@@ -207,13 +204,18 @@ public class XML_DTD {
                     String nombreA = canciones.item(j).getParentNode().getFirstChild().getNextSibling().getTextContent();
                     if (nombreA.equals(album)) {
                         NodeList childNodes = canciones.item(j).getChildNodes();
+
+                        ArrayList<String> descrp = new ArrayList<>();
+                        String nombreC = null;
+                        String duracion = null;
+                        String descrip = "";
+
                         for (int i = 0; i < childNodes.getLength(); i++) {
-                            if (childNodes.item(i).getNodeName().equals("#text") && !childNodes.item(i).equals("\n")) {
-                                descrp = childNodes.item(i).getTextContent();
-                                descrp = descrp.replaceAll(" ", "");
-                                descrp = descrp.replaceAll("\n", "");
-                                if(descrp.isEmpty())
-                                    descrp = "---";
+                            if (childNodes.item(i).getNodeName().equals("#text")) {
+                                String aux = childNodes.item(i).getTextContent();
+                                aux = aux.replaceAll("           ", "").replaceAll("       ","");
+                                aux = aux.replaceAll("\n", "");
+                                descrp.add(aux);
                             } else {
                                 if (childNodes.item(i).getNodeName().equals("NombreT")) {
                                     nombreC = childNodes.item(i).getTextContent();
@@ -223,9 +225,11 @@ public class XML_DTD {
                                     }
                                 }
                             }
-
                         }
-                        String cancion = nombreC + " (" + descrp + "; " + duracion + ")";
+                        for (String cad:descrp){
+                            descrip = descrip + cad;
+                        }
+                        String cancion = nombreC + " (" + descrip + "; " + duracion + ")";
                         System.out.println(cancion);
                     }
                 }
