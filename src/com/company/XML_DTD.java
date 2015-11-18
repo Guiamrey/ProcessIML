@@ -194,6 +194,10 @@ public class XML_DTD {
 
     public static ArrayList getCancionesCantante(String cantante, String album) {
         ArrayList<String> lista = new ArrayList<>();
+        String descrp = null;
+        String nombreC = null;
+        String duracion = null;
+
         for (Document doc : listDoc) {
             Element element = doc.getDocumentElement();
             String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
@@ -204,12 +208,25 @@ public class XML_DTD {
                     if (nombreA.equals(album)) {
                         NodeList childNodes = canciones.item(j).getChildNodes();
                         for (int i = 0; i < childNodes.getLength(); i++) {
-                            if(childNodes.item(i).getNodeName().equals("#text") && childNodes.item(i).getTextContent().equals("")){
-                                String descrp = childNodes.item(i).getTextContent();
+                            if (childNodes.item(i).getNodeName().equals("#text") && !childNodes.item(i).equals("\n")) {
+                                descrp = childNodes.item(i).getTextContent();
+                                descrp = descrp.replaceAll(" ", "");
+                                descrp = descrp.replaceAll("\n", "");
+                                if(descrp.isEmpty())
+                                    descrp = "---";
+                            } else {
+                                if (childNodes.item(i).getNodeName().equals("NombreT")) {
+                                    nombreC = childNodes.item(i).getTextContent();
+                                }else{
+                                    if(childNodes.item(i).getNodeName().equals("Duracion")){
+                                        duracion = childNodes.item(i).getTextContent();
+                                    }
+                                }
                             }
-                            System.out.println("+"+childNodes.item(i).getTextContent());
 
                         }
+                        String cancion = nombreC + " (" + descrp + "; " + duracion + ")";
+                        System.out.println(cancion);
                     }
                 }
             }
