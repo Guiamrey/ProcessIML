@@ -40,8 +40,9 @@ public class XML_DTD {
             listaXMLleidos.add(url);
         }
 
-        getCantantes();
-
+       //getCantantes();
+        //getAñoAlbumes();
+        getAlbumCantante("Joaquin Sabina");
     }
 
     public static void processIML(String XML) {
@@ -80,8 +81,6 @@ public class XML_DTD {
 
             if ((!listaXML.contains(iml.item(i).getTextContent()) && !iml.item(i).getTextContent().equals("")) && !listaXMLleidos.contains(iml.item(i).getTextContent())) {
                 listaXML.add(iml.item(i).getTextContent());
-                System.out.println("-------------------->>"+iml.item(i).getTextContent());
-
             }
         }
         /*
@@ -171,6 +170,35 @@ public class XML_DTD {
             Node firstChild1 = nextSibling.getFirstChild();
             Node nombre = firstChild1.getNextSibling(); //Elemento NombreC o NombreG
             lista.add(nombre.getTextContent());
+        }
+        return lista;
+    }
+
+    public static ArrayList getAñoAlbumes(){
+
+        ArrayList<String> lista = new ArrayList<>();
+        for (Document doc : listDoc) {
+            NodeList listanho = doc.getElementsByTagName("Año"); //Element Año
+            for (int i = 0; i < listanho.getLength(); i++) {
+                String anho = listanho.item(i).getTextContent();
+                lista.add(anho);
+            }
+        }
+        return lista;
+    }
+
+    public static ArrayList getAlbumCantante(String cantante){
+        ArrayList<String> lista = new ArrayList<>();
+        for (Document doc: listDoc) {
+            Element element = doc.getDocumentElement();
+            String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
+            if(nombre.equals(cantante)){
+                NodeList nombreA = doc.getElementsByTagName("NombreA");
+                for (int i = 0; i < nombreA.getLength(); i++) {
+                    String albumes = nombreA.item(i).getTextContent();
+                    lista.add(albumes);
+                }
+            }
         }
         return lista;
     }
