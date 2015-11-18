@@ -32,12 +32,15 @@ public class XML_DTD {
         listaXMLleidos.add(URL);
 
 
+
         while (listaXML.size() > 0) {
             String url = listaXML.get(0);
             processIML(url);
             listaXML.remove(0);
             listaXMLleidos.add(url);
         }
+
+        getCantantes();
 
     }
 
@@ -71,6 +74,17 @@ public class XML_DTD {
         }
 
         listDoc.add(doc);
+
+        NodeList iml = doc.getElementsByTagName("IML");
+        for (int i = 0; i < iml.getLength(); i++) {
+
+            if ((!listaXML.contains(iml.item(i).getTextContent()) && !iml.item(i).getTextContent().equals("")) && !listaXMLleidos.contains(iml.item(i).getTextContent())) {
+                listaXML.add(iml.item(i).getTextContent());
+                System.out.println("-------------------->>"+iml.item(i).getTextContent());
+
+            }
+        }
+        /*
         XPath xpath = XPathFactory.newInstance().newXPath();
         NodeList nodelist = null;
 
@@ -143,8 +157,22 @@ public class XML_DTD {
                 }
                 j++;
             }
-        }
+        }*/
 
+    }
+
+    public static ArrayList getCantantes(){
+
+        ArrayList<String> lista = new ArrayList<>();
+        for (Document doc : listDoc) {
+            Element element = doc.getDocumentElement(); //Element Interprete
+            Node firstChild = element.getFirstChild(); //Primer hijo (#text) del elemento Interprete
+            Node nextSibling = firstChild.getNextSibling(); //Hermano -> element Nombre
+            Node firstChild1 = nextSibling.getFirstChild();
+            Node nombre = firstChild1.getNextSibling(); //Elemento NombreC o NombreG
+            lista.add(nombre.getTextContent());
+        }
+        return lista;
     }
 }
 
