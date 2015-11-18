@@ -45,110 +45,161 @@ public class XML_DTD {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(true);
         DocumentBuilder db;
+        Document doc;
+        XML_DTD_ErrorHandler errorHandler = new XML_DTD_ErrorHandler();
+
         try {
             db = dbf.newDocumentBuilder();
-            XML_DTD_ErrorHandler errorHandler = new XML_DTD_ErrorHandler();
+
             db.setErrorHandler(errorHandler);
-            Document doc;
 
             doc = db.parse(XML);
 
-            if(errorHandler)
-
-            listDoc.add(doc);
-
-            XPath xpath = XPathFactory.newInstance().newXPath();
-            NodeList nodelist = (NodeList) xpath.evaluate("/Interprete", doc, XPathConstants.NODESET);
 
 
-            Node node = nodelist.item(0); //Nodo del elemento raiz (Interprete)
-            System.out.println(" " + node.getNodeName());
-
-            NodeList childs = node.getChildNodes(); //Elemetos hijos del elemento raiz
-
-            for (int i = 1; i < childs.getLength(); i++) {
-                //  Node child = childs.item(i);
-                System.out.println("\t " + childs.item(i).getNodeName());
-                NodeList childs2 = childs.item(i).getChildNodes();
-
-                if (childs.item(i).hasAttributes()) {
-                    NamedNodeMap attributes1 = childs.item(i).getAttributes();
-                    for (int k = 0; k < attributes1.getLength(); k++) {
-                        System.out.println("\t\t " + attributes1.item(k).getNodeName() + " : " + attributes1.item(k).getTextContent());
-                    }
-                }
-                i++;
-                for (int j = 1; j < childs2.getLength(); j++) {
-                    if (!childs2.item(j).getNodeName().equals("Cancion")) {
-                        System.out.print("\t\t" + childs2.item(j).getNodeName() + ":");
-                        System.out.println(" " + childs2.item(j).getTextContent());
-                    } else {
-                        System.out.print("\t\t" + childs2.item(j).getNodeName() + ":");
-
-                        NamedNodeMap attributes2 = childs2.item(j).getAttributes();
-                        for (int k = 0; k < attributes2.getLength(); k++) {
-                            System.out.println("\t" + attributes2.item(k).getNodeName() + ": " + attributes2.item(k).getTextContent());
-                        }
-
-                        NodeList childsCancion = childs2.item(j).getChildNodes();
-                        for (int n = 1; n < childsCancion.getLength(); n++) {
-                            if (!childsCancion.item(n).getNodeName().equals("Version")) {
-                                System.out.print("\t\t\t\t" + childsCancion.item(n).getNodeName() + ":");
-                                System.out.println(" " + childsCancion.item(n).getTextContent());
-                                n++;
-                            } else {
-                                System.out.println("\t\t\t\t" + childsCancion.item(n).getNodeName());
-                                NodeList childsVersion = childsCancion.item(n).getChildNodes();
-                                for (int a = 1; a < childsVersion.getLength(); a++) {
-                                    if (!childsVersion.item(a).getNodeName().equals("Nombre")) {
-                                        System.out.print("\t\t\t\t\t" + childsVersion.item(a).getNodeName());
-                                        System.out.println(": " + childsVersion.item(a).getTextContent());
-
-                                        if ((!listaXML.contains(childsVersion.item(a).getTextContent()) && !childsVersion.item(a).getTextContent().equals("")) && !listaXMLleidos.contains(childsVersion.item(a).getTextContent())) {
-                                            listaXML.add(childsVersion.item(a).getTextContent());
-                                        }
-                                        //añadir nuevas rutas hacia IMLs
-                                        a++;
-                                    } else {
-                                        System.out.println("\t\t\t\t\t" + childsVersion.item(a).getNodeName());
-
-                                        NodeList childsNF = childsVersion.item(a).getChildNodes();
-                                        System.out.println("\t\t\t\t\t\t" + childsNF.item(1).getNodeName() + ": " + childsNF.item(1).getTextContent());
-                                        System.out.println("\t\t\t\t\t\t" + childsNF.item(3).getNodeName() + ": " + childsNF.item(3).getTextContent());
-                                        a++;
-                                    }
-                                }
-                                n++;
-                            }
-                        }
-                    }
-                    j++;
-                }
-            }
-        } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
             return;
 
         }
+
+        if(errorHandler.hasError() || errorHandler.hasWarning() || errorHandler.hasFatalError()){
+            listFichError.add(XML);
+            listError.add(errorHandler.getMessage());
+            errorHandler.clear();
+            return;
+        }
+
+        listDoc.add(doc);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        NodeList nodelist = null;
+
+        try {
+            nodelist = (NodeList) xpath.evaluate("/Interprete", doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+
+        Node node = nodelist.item(0); //Nodo del elemento raiz (Interprete)
+        System.out.println(" " + node.getNodeName());
+
+        NodeList childs = node.getChildNodes(); //Elemetos hijos del elemento raiz
+
+        for (int i = 1; i < childs.getLength(); i++) {
+            //  Node child = childs.item(i);
+            System.out.println("\t " + childs.item(i).getNodeName());
+            NodeList childs2 = childs.item(i).getChildNodes();
+
+            if (childs.item(i).hasAttributes()) {
+                NamedNodeMap attributes1 = childs.item(i).getAttributes();
+                for (int k = 0; k < attributes1.getLength(); k++) {
+                    System.out.println("\t\t " + attributes1.item(k).getNodeName() + " : " + attributes1.item(k).getTextContent());
+                }
+            }
+            i++;
+            for (int j = 1; j < childs2.getLength(); j++) {
+                if (!childs2.item(j).getNodeName().equals("Cancion")) {
+                    System.out.print("\t\t" + childs2.item(j).getNodeName() + ":");
+                    System.out.println(" " + childs2.item(j).getTextContent());
+                } else {
+                    System.out.print("\t\t" + childs2.item(j).getNodeName() + ":");
+
+                    NamedNodeMap attributes2 = childs2.item(j).getAttributes();
+                    for (int k = 0; k < attributes2.getLength(); k++) {
+                        System.out.println("\t" + attributes2.item(k).getNodeName() + ": " + attributes2.item(k).getTextContent());
+                    }
+
+                    NodeList childsCancion = childs2.item(j).getChildNodes();
+                    for (int n = 1; n < childsCancion.getLength(); n++) {
+                        if (!childsCancion.item(n).getNodeName().equals("Version")) {
+                            System.out.print("\t\t\t\t" + childsCancion.item(n).getNodeName() + ":");
+                            System.out.println(" " + childsCancion.item(n).getTextContent());
+                            n++;
+                        } else {
+                            System.out.println("\t\t\t\t" + childsCancion.item(n).getNodeName());
+                            NodeList childsVersion = childsCancion.item(n).getChildNodes();
+                            for (int a = 1; a < childsVersion.getLength(); a++) {
+                                if (!childsVersion.item(a).getNodeName().equals("Nombre")) {
+                                    System.out.print("\t\t\t\t\t" + childsVersion.item(a).getNodeName());
+                                    System.out.println(": " + childsVersion.item(a).getTextContent());
+
+                                    if ((!listaXML.contains(childsVersion.item(a).getTextContent()) && !childsVersion.item(a).getTextContent().equals("")) && !listaXMLleidos.contains(childsVersion.item(a).getTextContent())) {
+                                        listaXML.add(childsVersion.item(a).getTextContent());
+                                    }
+                                    //añadir nuevas rutas hacia IMLs
+                                    a++;
+                                } else {
+                                    System.out.println("\t\t\t\t\t" + childsVersion.item(a).getNodeName());
+
+                                    NodeList childsNF = childsVersion.item(a).getChildNodes();
+                                    System.out.println("\t\t\t\t\t\t" + childsNF.item(1).getNodeName() + ": " + childsNF.item(1).getTextContent());
+                                    System.out.println("\t\t\t\t\t\t" + childsNF.item(3).getNodeName() + ": " + childsNF.item(3).getTextContent());
+                                    a++;
+                                }
+                            }
+                            n++;
+                        }
+                    }
+                }
+                j++;
+            }
+        }
+
     }
 }
 
 class XML_DTD_ErrorHandler extends DefaultHandler {
+
+    public boolean error;
+    public boolean warning;
+    public boolean fatalerror;
+    public String message;
+
     public XML_DTD_ErrorHandler() {
+        error = false;
+        warning = false;
+        fatalerror = false;
+        message = null;
     }
 
     public void warning(SAXParseException spe) {
-
-        System.out.println("Warning: " + spe.toString());
+        warning = true;
+        message = "Warning: " + spe.toString();
+        System.out.println(message);
     }
 
     public void error(SAXParseException spe) {
+        error = true;
+        message = "Error: " + spe.toString();
 
-        System.out.println("Error: " + spe.toString());
+        System.out.println(message);
     }
 
     public void fatalerror(SAXParseException spe) {
+        fatalerror = true;
+        message = "Fatal Error: " + spe.toString();
 
-        System.out.println("Fatal Error: " + spe.toString());
+        System.out.println(message);
     }
+
+    public boolean hasWarning(){
+        return warning;
+    }
+    public  boolean hasError(){
+        return error;
+    }
+    public boolean hasFatalError(){
+        return fatalerror;
+    }
+    public String getMessage(){
+        return message;
+    }
+    public void clear(){
+        warning = false;
+        error = false;
+        fatalerror = false;
+        message = null;
+    }
+
+
 }
