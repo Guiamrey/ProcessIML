@@ -16,8 +16,10 @@
         <Año>1999</Año>
 
         <Cancion estilo="rock">
+            Descripcion 2
             <NombreT>Barbi Superestar</NombreT>
             <Duracion>06:37</Duracion>
+            Descripcion 1
             <Version>
                 <Nombre>
                     <NombreC>Dani Martin</NombreC>

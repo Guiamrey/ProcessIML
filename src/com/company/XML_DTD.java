@@ -32,7 +32,6 @@ public class XML_DTD {
         listaXMLleidos.add(URL);
 
 
-
         while (listaXML.size() > 0) {
             String url = listaXML.get(0);
             processIML(url);
@@ -40,9 +39,10 @@ public class XML_DTD {
             listaXMLleidos.add(url);
         }
 
-       //getCantantes();
+        //getCantantes();
         //getAñoAlbumes();
-        getAlbumCantante("Joaquin Sabina");
+        //getAlbumCantante("Joaquin Sabina");
+        getCancionesCantante("Joaquin Sabina", "19 dias y 500 noches");
     }
 
     public static void processIML(String XML) {
@@ -60,14 +60,13 @@ public class XML_DTD {
             doc = db.parse(XML);
 
 
-
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
             return;
 
         }
 
-        if(errorHandler.hasError() || errorHandler.hasWarning() || errorHandler.hasFatalError()){
+        if (errorHandler.hasError() || errorHandler.hasWarning() || errorHandler.hasFatalError()) {
             listFichError.add(XML);
             listError.add(errorHandler.getMessage());
             errorHandler.clear();
@@ -160,7 +159,10 @@ public class XML_DTD {
 
     }
 
-    public static ArrayList getCantantes(){
+    /***
+     * CONSULTA 1
+     *********/
+    public static ArrayList getCantantes() {
 
         ArrayList<String> lista = new ArrayList<>();
         for (Document doc : listDoc) {
@@ -174,7 +176,51 @@ public class XML_DTD {
         return lista;
     }
 
-    public static ArrayList getAñoAlbumes(){
+    public static ArrayList getAlbumCantante(String cantante) {
+        ArrayList<String> lista = new ArrayList<>();
+        for (Document doc : listDoc) {
+            Element element = doc.getDocumentElement();
+            String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
+            if (nombre.equals(cantante)) {
+                NodeList nombreA = doc.getElementsByTagName("NombreA");
+                for (int i = 0; i < nombreA.getLength(); i++) {
+                    String albumes = nombreA.item(i).getTextContent();
+                    lista.add(albumes);
+                }
+            }
+        }
+        return lista;
+    }
+
+    public static ArrayList getCancionesCantante(String cantante, String album) {
+        ArrayList<String> lista = new ArrayList<>();
+        for (Document doc : listDoc) {
+            Element element = doc.getDocumentElement();
+            String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
+            if (nombre.equals(cantante)) {
+                NodeList canciones = doc.getElementsByTagName("Cancion");
+                for (int j = 0; j < canciones.getLength(); j++) {
+                    String nombreA = canciones.item(j).getParentNode().getFirstChild().getNextSibling().getTextContent();
+                    if (nombreA.equals(album)) {
+                        NodeList childNodes = canciones.item(j).getChildNodes();
+                        for (int i = 0; i < childNodes.getLength(); i++) {
+                            if(childNodes.item(i).getNodeName().equals("#text") && childNodes.item(i).getTextContent().equals("")){
+                                String descrp = childNodes.item(i).getTextContent();
+                            }
+                            System.out.println("+"+childNodes.item(i).getTextContent());
+
+                        }
+                    }
+                }
+            }
+        }
+        return lista;
+    }
+
+    /*******
+     * CONSULTA 2
+     *******/
+    public static ArrayList getAñoAlbumes() {
 
         ArrayList<String> lista = new ArrayList<>();
         for (Document doc : listDoc) {
@@ -182,22 +228,6 @@ public class XML_DTD {
             for (int i = 0; i < listanho.getLength(); i++) {
                 String anho = listanho.item(i).getTextContent();
                 lista.add(anho);
-            }
-        }
-        return lista;
-    }
-
-    public static ArrayList getAlbumCantante(String cantante){
-        ArrayList<String> lista = new ArrayList<>();
-        for (Document doc: listDoc) {
-            Element element = doc.getDocumentElement();
-            String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
-            if(nombre.equals(cantante)){
-                NodeList nombreA = doc.getElementsByTagName("NombreA");
-                for (int i = 0; i < nombreA.getLength(); i++) {
-                    String albumes = nombreA.item(i).getTextContent();
-                    lista.add(albumes);
-                }
             }
         }
         return lista;
@@ -238,19 +268,23 @@ class XML_DTD_ErrorHandler extends DefaultHandler {
         System.out.println(message);
     }
 
-    public boolean hasWarning(){
+    public boolean hasWarning() {
         return warning;
     }
-    public  boolean hasError(){
+
+    public boolean hasError() {
         return error;
     }
-    public boolean hasFatalError(){
+
+    public boolean hasFatalError() {
         return fatalerror;
     }
-    public String getMessage(){
+
+    public String getMessage() {
         return message;
     }
-    public void clear(){
+
+    public void clear() {
         warning = false;
         error = false;
         fatalerror = false;
