@@ -38,11 +38,20 @@ public class XML_DTD {
             listaXML.remove(0);
             listaXMLleidos.add(url);
         }
+/*** consulta 1 ***/
+        //ArrayList list = getCantantes();
+        //ArrayList list = getAlbumCantante("todos");
+       // ArrayList list = getCancionesCantante("Joaquin Sabina", "Todos");
+/***consulta 2****/
+        //ArrayList list = getAnhoAlbumes();
+       // ArrayList list = getAlbumesPorAnho("todos");
+       // ArrayList list = getEstilo("Todos", "todos");
+        ArrayList list = getCancionesEstilo("Todos", "Todos", "Pop-rock");
+        System.out.println("\n\n");
 
-        //getCantantes();
-        //getAñoAlbumes();
-        //getAlbumCantante("Joaquin Sabina");
-        getCancionesCantante("Joaquin Sabina", "19 dias y 500 noches");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+        }
     }
 
     public static void processIML(String XML) {
@@ -181,7 +190,7 @@ public class XML_DTD {
         for (Document doc : listDoc) {
             Element element = doc.getDocumentElement();
             String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
-            if (nombre.equals(cantante)) {
+            if (nombre.equals(cantante) || cantante.equalsIgnoreCase("todos")) {
                 NodeList nombreA = doc.getElementsByTagName("NombreA");
                 for (int i = 0; i < nombreA.getLength(); i++) {
                     String albumes = nombreA.item(i).getTextContent();
@@ -195,56 +204,53 @@ public class XML_DTD {
     public static ArrayList getCancionesCantante(String cantante, String album) {
         ArrayList<String> lista = new ArrayList<>();
 
-        if(!cantante.equalsIgnoreCase("todos")) {
-            for (Document doc : listDoc) {
-                Element element = doc.getDocumentElement();
-                String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
-                if (nombre.equals(cantante)) {
-                    NodeList canciones = doc.getElementsByTagName("Cancion");
-                    for (int j = 0; j < canciones.getLength(); j++) {
-                        String nombreA = canciones.item(j).getParentNode().getFirstChild().getNextSibling().getTextContent();
-                        if (nombreA.equals(album)) {
-                            NodeList childNodes = canciones.item(j).getChildNodes();
+        for (Document doc : listDoc) {
+            Element element = doc.getDocumentElement();
+            String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
+            if (nombre.equals(cantante) || cantante.equalsIgnoreCase("todos")) {
+                NodeList canciones = doc.getElementsByTagName("Cancion");
+                for (int j = 0; j < canciones.getLength(); j++) {
+                    String nombreA = canciones.item(j).getParentNode().getFirstChild().getNextSibling().getTextContent();
+                    if (nombreA.equals(album) || album.equalsIgnoreCase("todos")) {
+                        NodeList childNodes = canciones.item(j).getChildNodes();
 
-                            ArrayList<String> descrp = new ArrayList<>();
-                            String nombreC = null;
-                            String duracion = null;
-                            String descrip = "";
+                        ArrayList<String> descrp = new ArrayList<>();
+                        String nombreC = null;
+                        String duracion = null;
+                        String descrip = "";
 
-                            for (int i = 0; i < childNodes.getLength(); i++) {
-                                if (childNodes.item(i).getNodeName().equals("#text")) {
-                                    String aux = childNodes.item(i).getTextContent();
-                                    aux = aux.replaceAll("           ", "").replaceAll("       ", "").replaceAll("\n", "");
-                                    descrp.add(aux);
+                        for (int i = 0; i < childNodes.getLength(); i++) {
+                            if (childNodes.item(i).getNodeName().equals("#text")) {
+                                String aux = childNodes.item(i).getTextContent();
+                                aux = aux.replaceAll("           ", "").replaceAll("       ", "").replaceAll("\n", "");
+                                descrp.add(aux);
+                            } else {
+                                if (childNodes.item(i).getNodeName().equals("NombreT")) {
+                                    nombreC = childNodes.item(i).getTextContent();
                                 } else {
-                                    if (childNodes.item(i).getNodeName().equals("NombreT")) {
-                                        nombreC = childNodes.item(i).getTextContent();
-                                    } else {
-                                        if (childNodes.item(i).getNodeName().equals("Duracion")) {
-                                            duracion = childNodes.item(i).getTextContent();
-                                        }
+                                    if (childNodes.item(i).getNodeName().equals("Duracion")) {
+                                        duracion = childNodes.item(i).getTextContent();
                                     }
                                 }
                             }
-                            for (String cad : descrp) {
-                                descrip = descrip + cad;
-                            }
-                            String cancion = nombreC + " (" + descrip + "; " + duracion + ")";
-                            System.out.println(cancion);
                         }
+                        for (String cad : descrp) {
+                            descrip = descrip + cad;
+                        }
+                        String cancion = nombreC + " (" + descrip + "; " + duracion + ")";
+                        lista.add(cancion);
                     }
                 }
             }
-        }else{ //opcion cantante todos
-
         }
+
         return lista;
     }
 
     /*******
      * CONSULTA 2
      *******/
-    public static ArrayList getAñoAlbumes() {
+    public static ArrayList getAnhoAlbumes() {
 
         ArrayList<String> lista = new ArrayList<>();
         for (Document doc : listDoc) {
@@ -252,6 +258,95 @@ public class XML_DTD {
             for (int i = 0; i < listanho.getLength(); i++) {
                 String anho = listanho.item(i).getTextContent();
                 lista.add(anho);
+            }
+        }
+        return lista;
+    }
+
+    public static ArrayList getAlbumesPorAnho(String anho) {
+        ArrayList lista = new ArrayList();
+        for (Document doc : listDoc) {
+            NodeList albumes = doc.getElementsByTagName("Album");
+            for (int i = 0; i < albumes.getLength(); i++) {
+                String Anho = albumes.item(i).getFirstChild().getNextSibling().getNextSibling().getNextSibling().getTextContent();
+                if (Anho.equals(anho) || anho.equalsIgnoreCase("todos")) {
+                    String album = albumes.item(i).getFirstChild().getNextSibling().getTextContent();
+                    lista.add(album);
+                }
+            }
+        }
+        return lista;
+    }
+
+    public static ArrayList getEstilo(String anho, String album) {
+        ArrayList lista = new ArrayList();
+        for (Document doc : listDoc) {
+            NodeList albumes = doc.getElementsByTagName("Album");
+            for (int i = 0; i < albumes.getLength(); i++) {
+                String Anho = albumes.item(i).getFirstChild().getNextSibling().getNextSibling().getNextSibling().getTextContent();
+                String nombreA = albumes.item(i).getFirstChild().getNextSibling().getTextContent();
+                if ((Anho.equals(anho) || anho.equalsIgnoreCase("todos")) && (nombreA.equals(album) || album.equalsIgnoreCase("todos"))) {
+                    Node canciones = albumes.item(i).getLastChild().getPreviousSibling();
+                    NamedNodeMap attributes = canciones.getAttributes();
+                    for (int j = 0; j < attributes.getLength(); j++) {
+                       String estilo = attributes.item(j).getTextContent();
+                        lista.add(estilo);
+                    }
+                }
+            }
+        }
+        return lista;
+    }
+
+    public static ArrayList getCancionesEstilo(String anho, String album, String estilo){
+        ArrayList lista = new ArrayList();
+
+        for (Document doc : listDoc) {
+            NodeList albumes = doc.getElementsByTagName("Album");
+            for (int i = 0; i < albumes.getLength(); i++) {
+                String Anho = albumes.item(i).getFirstChild().getNextSibling().getNextSibling().getNextSibling().getTextContent();
+                String nombreA = albumes.item(i).getFirstChild().getNextSibling().getTextContent();
+                if ((Anho.equals(anho) || anho.equalsIgnoreCase("todos")) && (nombreA.equals(album) || album.equalsIgnoreCase("todos"))) {
+                    Node canciones = albumes.item(i).getLastChild().getPreviousSibling();
+                    NamedNodeMap attributes = canciones.getAttributes();
+                    for (int j = 0; j < attributes.getLength(); j++) {
+                        String Estilo = attributes.item(j).getTextContent();
+                        if(Estilo.equals(estilo) || estilo.equalsIgnoreCase("todos")){
+                            Element elem = (Element) albumes.item(i);
+                            NodeList cancion = elem.getElementsByTagName("Cancion");
+
+
+                            NodeList childNodes = cancion.item(j).getChildNodes();
+
+                            ArrayList<String> descrp = new ArrayList<>();
+                            String nombreC = null;
+                            String duracion = null;
+                            String descrip = "";
+
+                            for (int k = 0; k < childNodes.getLength(); k++) {
+                                if (childNodes.item(k).getNodeName().equals("#text")) {
+                                    String aux = childNodes.item(k).getTextContent();
+                                    aux = aux.replaceAll("           ", "").replaceAll("       ", "").replaceAll("\n", "");
+                                    descrp.add(aux);
+                                } else {
+                                    if (childNodes.item(k).getNodeName().equals("NombreT")) {
+                                        nombreC = childNodes.item(k).getTextContent();
+                                    } else {
+                                        if (childNodes.item(k).getNodeName().equals("Duracion")) {
+                                            duracion = childNodes.item(k).getTextContent();
+                                        }
+                                    }
+                                }
+                            }
+                            for (String cad : descrp) {
+                                descrip = descrip + cad;
+                            }
+                            String song = nombreC + " (" + descrip + "; " + duracion + ")";
+                            System.out.println(song);
+
+                        }
+                    }
+                }
             }
         }
         return lista;
