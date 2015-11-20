@@ -41,12 +41,12 @@ public class XML_DTD {
 /*** consulta 1 ***/
         //ArrayList list = getCantantes();
         //ArrayList list = getAlbumCantante("todos");
-       // ArrayList list = getCancionesCantante("Joaquin Sabina", "Todos");
+         ArrayList list = getCancionesCantante("Joaquín Sabina", "Física y Química");
 /***consulta 2****/
         //ArrayList list = getAnhoAlbumes();
-       // ArrayList list = getAlbumesPorAnho("todos");
-       // ArrayList list = getEstilo("Todos", "todos");
-        ArrayList list = getCancionesEstilo("Todos", "Todos", "Pop-rock");
+        // ArrayList list = getAlbumesPorAnho("todos");
+        // ArrayList list = getEstilo("Todos", "todos");
+        //ArrayList list = getCancionesEstilo("Todos", "Todos", "Todos");
         System.out.println("\n\n");
 
         for (int i = 0; i < list.size(); i++) {
@@ -55,6 +55,7 @@ public class XML_DTD {
     }
 
     public static void processIML(String XML) {
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(true);
         DocumentBuilder db;
@@ -96,7 +97,7 @@ public class XML_DTD {
         NodeList nodelist = null;
 
         try {
-            nodelist = (NodeList) xpath.evaluate("/Interprete", doc, XPathConstants.NODESET);
+           nodelist = (NodeList) xpath.evaluate("/Interprete", doc, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
@@ -207,10 +208,11 @@ public class XML_DTD {
         for (Document doc : listDoc) {
             Element element = doc.getDocumentElement();
             String nombre = element.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getTextContent();
-            if (nombre.equals(cantante) || cantante.equalsIgnoreCase("todos")) {
+            if (nombre.equalsIgnoreCase(cantante) || cantante.equalsIgnoreCase("todos")) {
                 NodeList canciones = doc.getElementsByTagName("Cancion");
                 for (int j = 0; j < canciones.getLength(); j++) {
                     String nombreA = canciones.item(j).getParentNode().getFirstChild().getNextSibling().getTextContent();
+
                     if (nombreA.equals(album) || album.equalsIgnoreCase("todos")) {
                         NodeList childNodes = canciones.item(j).getChildNodes();
 
@@ -222,8 +224,9 @@ public class XML_DTD {
                         for (int i = 0; i < childNodes.getLength(); i++) {
                             if (childNodes.item(i).getNodeName().equals("#text")) {
                                 String aux = childNodes.item(i).getTextContent();
-                                aux = aux.replaceAll("           ", "").replaceAll("       ", "").replaceAll("\n", "");
-                                descrp.add(aux);
+                                aux = aux.replaceAll("\n", "").trim();
+                                if (!aux.equals(""))
+                                    descrp.add(aux);
                             } else {
                                 if (childNodes.item(i).getNodeName().equals("NombreT")) {
                                     nombreC = childNodes.item(i).getTextContent();
@@ -289,7 +292,7 @@ public class XML_DTD {
                     Node canciones = albumes.item(i).getLastChild().getPreviousSibling();
                     NamedNodeMap attributes = canciones.getAttributes();
                     for (int j = 0; j < attributes.getLength(); j++) {
-                       String estilo = attributes.item(j).getTextContent();
+                        String estilo = attributes.item(j).getTextContent();
                         lista.add(estilo);
                     }
                 }
@@ -298,57 +301,74 @@ public class XML_DTD {
         return lista;
     }
 
-    public static ArrayList getCancionesEstilo(String anho, String album, String estilo){
+    public static ArrayList getCancionesEstilo(String anho, String album, String estilo) {
         ArrayList lista = new ArrayList();
 
         for (Document doc : listDoc) {
-            NodeList albumes = doc.getElementsByTagName("Album");
+          /*  XPath xpath = XPathFactory.newInstance().newXPath();
+            NodeList albumes = null;
+
+            try {
+                if(!anho.equalsIgnoreCase("todos") && !album.equalsIgnoreCase("todos") && !estilo.equalsIgnoreCase("todos")){
+                    System.out.println("HOLA1");
+
+                    albumes = (NodeList) xpath.evaluate("/Interprete/Album[Año='"+anho+"' and (NombreA='"+album+"')]/Cancion[@estilo='"+estilo+"']", doc, XPathConstants.NODESET);
+
+                }else{
+                    System.out.println("HOLA2");
+
+                    albumes = (NodeList) xpath.evaluate("Interprete/Album", doc, XPathConstants.NODESET);
+
+
+           */ NodeList albumes = doc.getElementsByTagName("Album");
             for (int i = 0; i < albumes.getLength(); i++) {
                 String Anho = albumes.item(i).getFirstChild().getNextSibling().getNextSibling().getNextSibling().getTextContent();
                 String nombreA = albumes.item(i).getFirstChild().getNextSibling().getTextContent();
                 if ((Anho.equals(anho) || anho.equalsIgnoreCase("todos")) && (nombreA.equals(album) || album.equalsIgnoreCase("todos"))) {
-                    Node canciones = albumes.item(i).getLastChild().getPreviousSibling();
-                    NamedNodeMap attributes = canciones.getAttributes();
-                    for (int j = 0; j < attributes.getLength(); j++) {
-                        String Estilo = attributes.item(j).getTextContent();
-                        if(Estilo.equals(estilo) || estilo.equalsIgnoreCase("todos")){
-                            Element elem = (Element) albumes.item(i);
-                            NodeList cancion = elem.getElementsByTagName("Cancion");
+                    Element disco = (Element) albumes.item(i);
+                    NodeList canciones = disco.getElementsByTagName("Cancion");
+                    for (int a = 0; a < canciones.getLength(); a++) {
+                            NamedNodeMap attributes = canciones.item(a).getAttributes();
+                            for (int j = 0; j < attributes.getLength(); j++) {
+                                String Estilo = attributes.item(j).getTextContent();
+                                if (Estilo.equals(estilo) || estilo.equalsIgnoreCase("todos")) {
 
+                                    NodeList childNodes = canciones.item(a).getChildNodes();
 
-                            NodeList childNodes = cancion.item(j).getChildNodes();
+                                    ArrayList<String> descrp = new ArrayList<>();
+                                    String nombreC = null;
+                                    String duracion = null;
+                                    String descrip = "";
 
-                            ArrayList<String> descrp = new ArrayList<>();
-                            String nombreC = null;
-                            String duracion = null;
-                            String descrip = "";
-
-                            for (int k = 0; k < childNodes.getLength(); k++) {
-                                if (childNodes.item(k).getNodeName().equals("#text")) {
-                                    String aux = childNodes.item(k).getTextContent();
-                                    aux = aux.replaceAll("           ", "").replaceAll("       ", "").replaceAll("\n", "");
-                                    descrp.add(aux);
-                                } else {
-                                    if (childNodes.item(k).getNodeName().equals("NombreT")) {
-                                        nombreC = childNodes.item(k).getTextContent();
-                                    } else {
-                                        if (childNodes.item(k).getNodeName().equals("Duracion")) {
-                                            duracion = childNodes.item(k).getTextContent();
+                                    for (int k = 0; k < childNodes.getLength(); k++) {
+                                        if (childNodes.item(k).getNodeName().equals("#text")) {
+                                            String aux = childNodes.item(k).getTextContent();
+                                            aux = aux.replaceAll("\n", "").trim();
+                                            if (!aux.equals(""))
+                                                descrp.add(aux);
+                                        } else {
+                                            if (childNodes.item(k).getNodeName().equals("NombreT")) {
+                                                nombreC = childNodes.item(k).getTextContent();
+                                            } else {
+                                                if (childNodes.item(k).getNodeName().equals("Duracion")) {
+                                                    duracion = childNodes.item(k).getTextContent();
+                                                }
+                                            }
                                         }
                                     }
+                                    for (String cad : descrp) {
+                                        descrip = descrip + cad +" ";
+                                    }
+                                    String song = nombreC + " (" + descrip + "; " + duracion + ")";
+                                    System.out.println(song);
+
                                 }
                             }
-                            for (String cad : descrp) {
-                                descrip = descrip + cad;
-                            }
-                            String song = nombreC + " (" + descrip + "; " + duracion + ")";
-                            System.out.println(song);
-
                         }
                     }
                 }
             }
-        }
+
         return lista;
     }
 }
@@ -370,21 +390,21 @@ class XML_DTD_ErrorHandler extends DefaultHandler {
     public void warning(SAXParseException spe) {
         warning = true;
         message = "Warning: " + spe.toString();
-        System.out.println(message);
+       // System.out.println(message);
     }
 
     public void error(SAXParseException spe) {
         error = true;
         message = "Error: " + spe.toString();
 
-        System.out.println(message);
+       // System.out.println(message);
     }
 
     public void fatalerror(SAXParseException spe) {
         fatalerror = true;
         message = "Fatal Error: " + spe.toString();
 
-        System.out.println(message);
+       // System.out.println(message);
     }
 
     public boolean hasWarning() {
